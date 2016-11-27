@@ -14,15 +14,6 @@ class Engine implements kite.internal.Internal{
 
     public static inline var NullIndex = -1;
 
-    // Index = Entity
-    private var _entities:ObjectPool<MatchedEntity>;
-
-    // All components: uid->index->component
-    private var _components:Vector<ObjectPool<IComponent>>;
-    
-    // Index = SystemIndex
-    private var _systems:ObjectPool<MatchedSystem>;
-
     public function new() {
         var componentCount = ComponentMapper.count();
 
@@ -47,18 +38,12 @@ class Engine implements kite.internal.Internal{
 
     // Getting entities makes a copy 
     public var entities(get,null):Array<Entity>;
-    private function get_entities():Array<Entity>
-        return [for(e in _entities) e];
 
     // Getting components makes a copy 
     public var components(get,null):Array<IComponent>;
-    private function get_components():Array<IComponent>
-        return [for(pool in _components) for(i in pool) pool.get(i)];
         
     // Getting systems makes a copy 
     public var systems(get,null):Array<ISystem>;
-    private function get_systems():Array<ISystem>
-        return [for(i in _systems) _systems.get(i).system];
     
     public function newEntity(?components:Iterable<Class<IComponent>>):Entity {
         var e:Entity = _entities.alloc(); // entity equals the index itself
@@ -165,9 +150,30 @@ class Engine implements kite.internal.Internal{
             }
         }
     }
+
+
     public function update(){
-        for(s in _systems) _systems.get(s).invoke(_components);
+        for(s in _systems) _systems.get(s).invoke(this,_components);
     }
+
+    
+
+
+    // Index = Entity
+    private var _entities:ObjectPool<MatchedEntity>;
+
+    // All components: uid->index->component
+    private var _components:Vector<ObjectPool<IComponent>>;
+    
+    // Index = SystemIndex
+    private var _systems:ObjectPool<MatchedSystem>;
+
+    private function get_entities():Array<Entity>
+        return [for(e in _entities) e];
+    private function get_components():Array<IComponent>
+        return [for(pool in _components) for(i in pool) pool.get(i)];
+    private function get_systems():Array<ISystem>
+        return [for(i in _systems) _systems.get(i).system];
 
     private function _match(system:MatchedSystem, entity:MatchedEntity){
         // match new links

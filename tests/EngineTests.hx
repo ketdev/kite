@@ -22,7 +22,7 @@ class ComponentTest3 implements IComponent{
 class SystemTest1 implements ISystem{
     public static var count = 0;
     public function new(){}
-    public function update(t0:ComponentTest1,t1:ComponentTest2){
+    public function update(engine:Engine,entity:Entity,t0:ComponentTest1,t1:ComponentTest2){
         count++;
     }
 }

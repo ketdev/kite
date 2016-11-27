@@ -61,9 +61,10 @@ class MatchedSystem implements kite.internal.Internal {
     public function freeLink(index:Int)
         _matched.free(index);
 
-    public function invoke(componentPool:Vector<ObjectPool<IComponent>>){
+    public function invoke(engine:Engine, componentPool:Vector<ObjectPool<IComponent>>){
         for(l in _matched){
             var link = _matched.get(l);
+            var entityIndex = link.entity.entity;
             var componentIndices = link.entity.components;
 
             // fill invoke arguments
@@ -75,7 +76,7 @@ class MatchedSystem implements kite.internal.Internal {
             }
 
             // invoke system update with correct arguments
-            _system.__invoke(_args);
+            _system.__invoke(engine,entityIndex,_args);
         }
     }
 

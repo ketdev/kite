@@ -78,11 +78,45 @@ class MakeSystem{
             case FFun(f):
                 // Get arguments
                 var args = f.args;
-                if(args.empty())
-                    Context.warning('$className has no component dependencies', classPos);
-                for(arg in args){
+                if(args.length < 2)
+                    Context.error('$className must at least have `kite.Engine` and `kite.Entity` as first two arguments', classPos);
+                else{
+                    // Check engine
+                    var arg = args[0];
                     if(arg.opt)
-                        Context.error('Component `${arg.name}` for $className.$SystemMethod(...) cannot be optional', classPos);                    
+                        Context.error('Engine argument `${arg.name}` for $className.$SystemMethod(...) cannot be optional', classPos); 
+                    var isEntity = false;
+                    switch (arg.type) {
+                        case TPath(p):  
+                            isEntity = typesMatch(
+                                Context.toComplexType(Context.getType(fullTypeName(p))),
+                                macro:kite.Engine
+                            );
+                        case _:
+                    } 
+                    if(!isEntity)
+                        Context.error('First argument `${arg.name}` for $className.$SystemMethod(...) must be `kite.Engine`', classPos);
+
+                    // Check entity
+                    arg = args[1];
+                    if(arg.opt)
+                        Context.error('Entity argument `${arg.name}` for $className.$SystemMethod(...) cannot be optional', classPos); 
+                    var isEntity = false;
+                    switch (arg.type) {
+                        case TPath(p):  
+                            isEntity = typesMatch(
+                                Context.toComplexType(Context.getType(fullTypeName(p))),
+                                macro:kite.Entity
+                            );
+                        case _:
+                    } 
+                    if(!isEntity)
+                        Context.error('First argument `${arg.name}` for $className.$SystemMethod(...) must be `kite.Entity`', classPos);
+                }
+                for(i in 2...args.length){
+                    var arg = args[i];
+                    if(arg.opt)
+                        Context.error('Component `${arg.name}` for $className.$SystemMethod(...) cannot be optional', classPos);
                     switch (arg.type) {
                         case TPath(p):
                             if(p.params.length > 0)
@@ -124,7 +158,7 @@ class MakeSystem{
     private static function generateInvoker(components:Array<String>): Field{
         var className = Context.getLocalClass().toString();
         
-        var exprString = 'update(' + [for(i in 0...components.length) 'cast args[$i]'].join(',') + ')';
+        var exprString = 'update(engine,entity,' + [for(i in 0...components.length) 'cast args[$i]'].join(',') + ')';
         
         var field:Field = {
             name: InvokeMethod,
@@ -133,6 +167,14 @@ class MakeSystem{
                 ret  : macro:Void,
                 expr : Context.parse(exprString,Context.currentPos()),
                 args : [{
+                    name: 'engine',
+                    type: macro:kite.Engine 
+                },
+                {
+                    name: 'entity',
+                    type: macro:kite.Entity 
+                },
+                {
                     name: 'args',
                     type: macro:haxe.ds.Vector<kite.IComponent> 
                 }]
@@ -160,6 +202,26 @@ class MakeSystem{
         };
 
         return field;
+    }
+
+    private static function typesMatch(t0:ComplexType, t1:ComplexType):Bool{
+        var match = false;
+        switch (t0) {
+            case TPath(pt):
+                switch (t1) {
+                    case TPath(ept):
+                        if(pt.name == ept.name && pt.pack.length == ept.pack.length){
+                            match = true;
+                            for(i in 0...pt.pack.length){
+                                if(pt.pack[i] != ept.pack[i])
+                                    match = false;
+                            }
+                        }
+                    case _:
+                }
+            case _:
+        }        
+        return match;
     }
 
 #end

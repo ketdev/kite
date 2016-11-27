@@ -2,7 +2,9 @@ package kite;
 
 /**
     Every system should contain an 'update' method that accepts components.
-    The required components are computed at compile time by the argument types.
+    The first argument is the invoking engine, second is the entity invoked on.
+    Following are the required components are computed at compile time by the 
+    argument types. 
     Return type is assumed to be Void, and is otherwise ignored.
 **/
 @:autoBuild(kite.macro.MakeSystem.generate())
@@ -14,7 +16,7 @@ interface ISystem{
         Attempting to implement will cause a compilation error.
     **/
     @:allow(kite.internal.Internal)
-    private function __invoke(components:haxe.ds.Vector<kite.IComponent>): Void;
+    private function __invoke(engine:kite.Engine,entity:kite.Entity,components:haxe.ds.Vector<kite.IComponent>): Void;
 
     /**
         This method returns the components and their order,

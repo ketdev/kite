@@ -31,6 +31,7 @@ class MatchedEntity implements kite.internal.Internal {
             _components[i] = Engine.NullIndex; 
     }
 
+
     public function setComponentIndex(uid:ComponentUID, index:ComponentIndex)
         _components.set(uid,index);
     public function removeComponent(uid:ComponentUID):ComponentIndex {
@@ -39,6 +40,9 @@ class MatchedEntity implements kite.internal.Internal {
         return index;
     }
 
+    public var entity(get,null):Entity;
+    private function get_entity():Entity 
+        return _entity;
     public var components(get,null):Vector<ComponentIndex>;
     private function get_components():Vector<ComponentIndex>
         return _components;    
