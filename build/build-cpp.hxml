@@ -1,0 +1,3 @@
+build/build.hxml
+-cpp bin/cpp
+#-D static_link

@@ -1,0 +1,7 @@
+{
+    "haxe.displayConfigurations": [
+        ["build/build-js.hxml"], 
+        ["build/build-cpp.hxml"], 
+        ["build/build-python.hxml"]
+    ]
+}

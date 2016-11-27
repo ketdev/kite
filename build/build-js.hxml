@@ -1,0 +1,2 @@
+build/build.hxml
+-js bin/js/app.js

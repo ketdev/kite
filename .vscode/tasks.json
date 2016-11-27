@@ -1,0 +1,26 @@
+{
+    "version": "0.1.0",
+    "command": "haxe",
+    "args": [],
+    "isShellCommand": true,
+    "showOutput": "always",
+    "echoCommand": true,
+    "suppressTaskName": true,
+    "tasks": [
+        { 
+            "taskName": "Build C++",
+            "isBuildCommand": true,
+            "args": ["build/build-cpp.hxml"]
+        },
+        { 
+            "taskName": "Build JS",
+            "isBuildCommand": true,
+            "args": ["build/build-js.hxml","-debug"]
+        },
+        { 
+            "taskName": "Build Python",
+            "isBuildCommand": true,
+            "args": ["build/build-python.hxml"]
+        }
+    ]
+}
