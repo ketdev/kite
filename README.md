@@ -1,2 +1,4 @@
-# kite
-Simple Entity Component System for Haxe
+kite
+=======
+
+A Data-Oriented framework for Haxe.

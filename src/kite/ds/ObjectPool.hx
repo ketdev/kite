@@ -1,4 +1,4 @@
-package kite.internal;
+package kite.ds;
 
 import haxe.ds.Vector;
 
@@ -20,7 +20,7 @@ class ObjectPoolIterator {
 
 class ObjectPool<T>{
 
-    public static inline var InitialCapacity = 64;
+    public static inline var InitialCapacity = 32;
 
     private var _allocator:Int->T;
 	private var _pool:Vector<T>;
@@ -29,18 +29,18 @@ class ObjectPool<T>{
 
     public var length(default,null):Int = 0;
 
-    public function new(allocator:Int->T){
+    public function new(allocator:Int->T, capacity:UInt = InitialCapacity){
         _allocator = allocator;
         // Preallocate pool
-        _pool = new Vector<T>(InitialCapacity);
+        _pool = new Vector<T>(capacity);
         for(index in 0..._pool.length)
             _pool.set(index,_allocator(index));
         // Build next index map
-        _next = new Vector<Int>(InitialCapacity);  
+        _next = new Vector<Int>(capacity);  
         for(index in 0..._pool.length)
             _next.set(index,index);    
         // Build holder index map
-        _holder = new Vector<Int>(InitialCapacity);  
+        _holder = new Vector<Int>(capacity);  
         for(index in 0..._pool.length)
             _holder.set(index,index);   
     }
@@ -105,6 +105,33 @@ class ObjectPool<T>{
     }
     public function iterator():Iterator<Int>{
         return new ObjectPoolIterator(_next,length);
+    }
+
+    public function reset(){
+        length = 0;
+        for(index in 0..._pool.length){
+            _next.set(index,index);   
+            _holder.set(index,index);
+        }
+    }
+
+    public function last():Int{
+        if(length == 0) 
+            return -1;
+        return _next[length-1];
+    }
+
+    public function push(value:T):Int {
+        var i = alloc();
+        set(i,value);
+        return i;
+    }
+    public function pop():T {
+        var i = last();
+        if(i < 0) return null;
+        var value = get(i);
+        free(i);
+        return value;
     }
 
 }

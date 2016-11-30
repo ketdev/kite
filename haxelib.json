@@ -2,11 +2,11 @@
     "name": "kite",
     "url" : "https://github.com/xhi2art/kite",
     "license": "MIT",
-    "tags": ["cross", "ecs", "framework"],
-    "description": "Simple Entity Component System for Haxe",
-    "version": "0.0.1",
+    "tags": ["cross", "ecs", "data oriented", "flow", "framework"],
+    "description": "A data-oriented framework for Haxe.",
+    "version": "1.0.0",
     "classPath": "src/",
-    "releasenote": "Initial release",
+    "releasenote": "API rework, more simple and safe",
     "contributors": ["xhi2art"],
     "dependencies": {}
 }

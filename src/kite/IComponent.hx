@@ -1,8 +1,12 @@
 package kite;
 
 /**
-    Components automatically adds a uid metadata 
-    with a unique value for each component type.
+    Data Components
+
+    Note: components are pooled, created by calling the default 
+    constructor (or empty if doesn't have), and reused between
+    data entities. Always set the value of the component when
+    adding a new component to a data entity. 
 **/
-@:autoBuild(kite.macro.MakeComponent.generate())
+@:autoBuild(kite.macro.UidMeta.add())
 interface IComponent {}

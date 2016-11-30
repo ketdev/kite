@@ -1,7 +1,7 @@
 package tests;
 
 import haxe.unit.TestCase;
-import kite.internal.ObjectPool;
+import kite.ds.ObjectPool;
 import Math.random;
 
 class ObjectPoolTests extends TestCase{
@@ -11,7 +11,7 @@ class ObjectPoolTests extends TestCase{
         var capacity = 500;
         var iterations = 1000;
 
-        var pool = new kite.internal.ObjectPool(function(id:Int) return id);
+        var pool = new kite.ds.ObjectPool(function(id:Int) return id);
         var result = new Map<Int,Bool>();
         var items = 0;
 
